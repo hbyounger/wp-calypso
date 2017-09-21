@@ -186,7 +186,7 @@ describe( 'middleware', () => {
 					height: 'windowInnerHeight',
 				},
 				userAgent: 'navigatorUserAgent',
-				geoLocation: state.happychat.geoLocation
+				geoLocation: state.extensions.happychat.geoLocation
 			};
 
 			const getState = () => state;

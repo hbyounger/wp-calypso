@@ -76,7 +76,7 @@ const sortTimeline = timeline => sortBy( timeline, event => parseInt( event.time
  * @param  {Object} action Action payload
  * @return {Object}        Updated state
  */
-export const geoLocation = createReducer( null, {
+const geoLocation = createReducer( null, {
 	[ HAPPYCHAT_SET_GEO_LOCATION ]: ( state, action ) => action.geoLocation
 }, geoLocationSchema );
 
@@ -145,7 +145,7 @@ timeline.hasCustomPersistence = true;
  * @return {Object}        Updated state
  *
  */
-export const message = ( state = '', action ) => {
+const message = ( state = '', action ) => {
 	switch ( action.type ) {
 		case HAPPYCHAT_SEND_MESSAGE:
 			return '';
@@ -226,7 +226,7 @@ const isAvailable = ( state = false, action ) => {
 	return state;
 };
 
-export const lastActivityTimestamp = ( state = null, action ) => {
+const lastActivityTimestamp = ( state = null, action ) => {
 	switch ( action.type ) {
 		case HAPPYCHAT_SEND_MESSAGE:
 		case HAPPYCHAT_RECEIVE_EVENT:
@@ -245,7 +245,7 @@ lastActivityTimestamp.schema = { type: 'number' };
  * @param  {Object} action Action payload
  * @return {Object}        Updated state
  */
-export const lostFocusAt = ( state = null, action ) => {
+const lostFocusAt = ( state = null, action ) => {
 	switch ( action.type ) {
 		case SERIALIZE:
 			// If there's already a timestamp set, use that. Otherwise treat a SERIALIZE as a
