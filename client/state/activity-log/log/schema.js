@@ -69,8 +69,6 @@ export const logItemsSchema = {
 							'menu__added',
 							'menu__deleted',
 							'menu__updated',
-							'menu__updated',
-							'menu__updated',
 							'plugin__activated',
 							'plugin__autoupdated',
 							'plugin__deactivated',
