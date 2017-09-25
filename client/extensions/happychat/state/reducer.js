@@ -12,7 +12,7 @@ import {
 	message,
 	timeline,
 	geoLocation,
-} from 'reducers';
+} from './reducers';
 
 export default combineReducers( {
 	chatStatus,
