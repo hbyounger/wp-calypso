@@ -63,7 +63,7 @@ export const handleActivityLogRequest = ( { dispatch }, action ) => {
 };
 
 export const receiveActivityLog = ( { dispatch }, { siteId }, data ) => {
-	dispatch( activityLogUpdate( siteId, fromApi( data ) ) );
+	dispatch( activityLogUpdate( siteId, data ) );
 };
 
 export const receiveActivityLogError = ( { dispatch }, { siteId }, error ) => {
@@ -72,6 +72,8 @@ export const receiveActivityLogError = ( { dispatch }, { siteId }, error ) => {
 
 export default {
 	[ ACTIVITY_LOG_REQUEST ]: [
-		dispatchRequest( handleActivityLogRequest, receiveActivityLog, receiveActivityLogError ),
+		dispatchRequest( handleActivityLogRequest, receiveActivityLog, receiveActivityLogError, {
+			fromApi,
+		} ),
 	],
 };
