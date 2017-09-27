@@ -90,8 +90,11 @@ class JetpackConnectAuthorizeForm extends Component {
 		);
 	}
 
-	isWCS() {
-		return 'woocommerce-services' === this.props.jetpackConnectAuthorize.queryObject.from;
+	isWoo() {
+		const wooSlugs = [ 'woocommerce-setup-wizard', 'woocommerce-services' ];
+		const jetpackConnectSource = this.props.jetpackConnectAuthorize.queryObject.from;
+
+		return -1 !== wooSlugs.indexOf( jetpackConnectSource );
 	}
 
 	handleClickHelp = () => {
@@ -116,9 +119,9 @@ class JetpackConnectAuthorizeForm extends Component {
 
 	renderForm() {
 		return this.props.user ? (
-			<LoggedInForm { ...this.props } isSSO={ this.isSSO() } isWCS={ this.isWCS() } />
+			<LoggedInForm { ...this.props } isSSO={ this.isSSO() } isWoo={ this.isWoo() } />
 		) : (
-			<LoggedOutForm { ...this.props } isSSO={ this.isSSO() } isWCS={ this.isWCS() } />
+			<LoggedOutForm { ...this.props } isSSO={ this.isSSO() } isWoo={ this.isWoo() } />
 		);
 	}
 
