@@ -29,10 +29,6 @@ function getValidCodemodNames() {
 	].map( name => '- ' + name ).sort();
 }
 
-function printableValidCodemodNames() {
-	return getValidCodemodNames().join('\n');
-}
-
 function generateBinArgs( name ) {
 	if ( config.codemodArgs.hasOwnProperty( name ) ) {
 		// Is the codemod defined in the codemodArgs object?
@@ -54,37 +50,32 @@ function generateBinArgs( name ) {
 function runCodemod() {
 	const args = process.argv.slice( 2 );
 	if ( args.length === 0 || args.length === 1 ) {
-		process.stdout.write( '\n' );
-		process.stdout.write( './bin/codemods/run.js [transformation name] [target(s)]\n' );
-		process.stdout.write( '\n' );
-		process.stdout.write( `Valid transformation names: \n${ printableValidCodemodNames() }\n` );
-		process.stdout.write( '\n' );
-		process.stdout.write( 'Example: "./bin/codemods/run.js commonjs-imports client/blocks client/devdocs"\n' );
-		process.stdout.write( '\n' );
+		process.stdout.write( [
+			'',
+			'./bin/codemods/run.js [transformation name] [target(s)]',
+			'',
+			'Valid transformation names:',
+			getValidCodemodNames().join( '\n' ),
+			'',
+			'Example: "./bin/codemods/run.js commonjs-imports client/blocks client/devdocs"',
+			'',
+		].join( '\n' ) )
+
 		process.exit( 0 );
 	}
 
 	const [ name, ...targets ] = args;
 	const binArgs = [
-		// jscodeshift options
 		...config.jscodeshiftArgs,
-
 		...generateBinArgs( name ),
-
-		// Transform target
-		...targets,
+		...targets, // Transform target
 	];
 
 	const binPath = path.join( '.', 'node_modules', '.bin', 'jscodeshift' );
 	const jscodeshift = child_process.spawn( binPath, binArgs );
 
-	jscodeshift.stdout.on( 'data', ( data ) => {
-		process.stdout.write( data );
-	} );
-
-	jscodeshift.stderr.on( 'data', ( data ) => {
-		process.stderr.write( data );
-	} );
+	jscodeshift.stdout.pipe( process.stdout, { end: false } );
+	jscodeshift.stderr.pipe( process.stderr, { end: false } );
 }
 
 runCodemod()
