@@ -14,17 +14,12 @@ const config = require( './src/config' );
 
 function getLocalCodemodFileNames() {
 	// Returns all JS files in bin/codemods/src folder, except for config and helpers.
-	const excludeUtilityFiles = name => name !== 'config.js' && name !== 'helpers.js';
-	const excludeDotFiles = name => name[0] !== '.';
-	const includeJSFiles = name => path.extname( name ) === '.js';
-	return fs.readdirSync( './bin/codemods/src' ).filter(
-		excludeUtilityFiles
-	).filter(
-		excludeDotFiles
-	).filter(
-		includeJSFiles
-	).map( name => name.replace( '.js', '' ) );
 
+	return fs.readdirSync( './bin/codemods/src' )
+		.filter( name => name !== 'config.js' && name != 'helpers.js' ) // exclude utility files
+		.filter( name => name[ 0 ] !== '.' ) // exclude dot files
+		.filter( name => path.extname( name ) === '.js' ) // only include JS files
+		.map( name => name.replace( '.js', '' ) ); // strip extension from filename
 }
 
 function getValidCodemodNames() {
@@ -35,7 +30,7 @@ function getValidCodemodNames() {
 }
 
 function printableValidCodemodNames() {
-	return `${ getValidCodemodNames().join('\n') }`
+	return getValidCodemodNames().join('\n');
 }
 
 function generateBinArgs( name ) {
