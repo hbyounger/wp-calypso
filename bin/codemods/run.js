@@ -6,6 +6,7 @@
 const fs = require( 'fs' );
 const path = require( 'path' );
 const child_process = require( 'child_process' );
+const glob = require( 'glob' );
 
 /**
  * Internal dependencies
@@ -14,12 +15,9 @@ const config = require( './src/config' );
 
 function getLocalCodemodFileNames() {
 	// Returns all JS files in bin/codemods/src folder, except for config and helpers.
-
-	return fs.readdirSync( './bin/codemods/src' )
-		.filter( name => name !== 'config.js' && name != 'helpers.js' ) // exclude utility files
-		.filter( name => name[ 0 ] !== '.' ) // exclude dot files
-		.filter( name => path.extname( name ) === '.js' ) // only include JS files
-		.map( name => name.replace( '.js', '' ) ); // strip extension from filename
+	return glob.sync( 'bin/codemods/src/*.js' )
+		.filter( name => name !== 'config.js' ) // exclude utility files
+		.map( name => name.replace( /\.js$/, '' ) ); // strip extension from filename
 }
 
 function getValidCodemodNames() {
