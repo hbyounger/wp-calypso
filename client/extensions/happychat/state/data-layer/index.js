@@ -44,7 +44,7 @@ export default function installActionHandlers( connection = null ) {
 	// Allow a connection object to be specified for
 	// testing. If blank, use a real connection.
 	if ( connection == null ) {
-		connection = require( './common' ).connection;
+		connection = require( 'extensions/happychat/state/common' ).connection;
 	}
 
 	const handlers = {
