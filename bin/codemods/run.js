@@ -37,16 +37,18 @@ function generateBinArgs( name ) {
 	if ( config.codemodArgs.hasOwnProperty( name ) ) {
 		// Is the codemod defined in the codemodArgs object?
 		return config.codemodArgs[ name ];
-	} else if ( getLocalCodemodFileNames().includes( name ) ) {
+	}
+
+	if ( getLocalCodemodFileNames().includes( name ) ) {
 		// Is the codemod a local script defined in bin/codemods/src folder?
 		return [
 			`--transform=bin/codemods/src/${ name }.js`,
 		];
-	} else {
-		throw new Error(
-			`"${ name }" is an unrecognized codemod.`
-		);
 	}
+
+	throw new Error(
+		`"${ name }" is an unrecognized codemod.`
+	);
 }
 
 function runCodemod() {
