@@ -13,6 +13,7 @@ import { setSection as setSectionAction } from 'state/ui/actions';
 import { getSection } from 'state/ui/selectors';
 import { setLocale } from 'state/ui/language/actions';
 import isRTL from 'state/selectors/is-rtl';
+import getCurrentLocaleSlug from 'state/selectors/get-current-locale-slug';
 
 export function makeLayoutMiddleware( LayoutComponent ) {
 	return ( context, next ) => {
@@ -101,6 +102,47 @@ export function loadSectionCSS( context, next ) {
 	next();
 }
 
+function loadMainCSS( context, next ) {
+	const cssUrl = isRTL( context.store.getState() ) ? window.app.urls[ 'style-rtl.css' ] : window.app.urls[ 'style.css' ];
+
+	const currentLink = document.getElementById( 'main-css' );
+	if ( currentLink.getAttribute( 'href' ) === cssUrl ) {
+		return next();
+	}
+
+	loadCSS( cssUrl, ( err, newLink ) => {
+		if ( currentLink && currentLink.parentElement ) {
+			currentLink.parentElement.removeChild( currentLink );
+		}
+
+		newLink.id = 'main-css';
+
+		next();
+	} );
+}
+
+function updateCSS( context, next ) {
+	if ( typeof document !== 'undefined' ) {
+		document.documentElement.lang = getCurrentLocaleSlug( context.store.getState() );
+		document.documentElement.dir = isRTL( context.store.getState() ) ? 'rtl' : 'ltr';
+
+		let called = 0;
+		const tryNext = () => {
+			called++;
+			return () => {
+				if ( --called === 0 ) {
+					next();
+				}
+			};
+		};
+		loadMainCSS( context, tryNext() );
+		loadSectionCSS( context, tryNext() );
+		return;
+	}
+
+	next();
+}
+
 export function setUpLocale( context, next ) {
 	const currentUser = getCurrentUser( context.store.getState() );
 
@@ -114,5 +156,5 @@ export function setUpLocale( context, next ) {
 
 	context.store.dispatch( setLocale( context.lang ) );
 
-	loadSectionCSS( context, next );
+	updateCSS( context, next );
 }
